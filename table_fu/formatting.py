@@ -4,7 +4,11 @@ Inspired by James Bennett's template_utils and Django's
 template filters.
 """
 import re
-import statestyle
+
+try:
+    import statestyle
+except ImportError:
+    statestyle = None
 
 
 def _saferound(value, decimal_places):
