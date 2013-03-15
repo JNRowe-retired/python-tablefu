@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import csv
 import unittest
+import os
 import urllib2
 from table_fu import TableFu
 from table_fu.formatting import Formatter
@@ -701,6 +702,8 @@ class OpenerTest(unittest.TestCase):
         self.assertEqual(t1.table, t2.table)
     
     def test_from_url(self):
+        if not os.getenv('TEST_REMOTE'):
+            return True
         url = "http://spreadsheets.google.com/pub?key=thJa_BvqQuNdaFfFJMMII0Q&output=csv"
         t1 = TableFu.from_url(url)
         t2 = TableFu(urllib2.urlopen(url))
@@ -710,6 +713,8 @@ class RemoteTest(unittest.TestCase):
     
     def test_use_url(self):
         "Use a response from urllib2.urlopen as our base file"
+        if not os.getenv('TEST_REMOTE'):
+            return True
         url = "http://spreadsheets.google.com/pub?key=thJa_BvqQuNdaFfFJMMII0Q&output=csv"
         response1 = urllib2.urlopen(url)
         response2 = urllib2.urlopen(url)
