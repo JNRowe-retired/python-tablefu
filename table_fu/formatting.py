@@ -196,8 +196,8 @@ def state_postal(value):
     Converts a state's name, or FIPS to its postal abbreviation
     
     Example usage:
-    
-        >> ap_state("California")
+
+        >> state_postal("California")
         'Calif.'
     
     """
