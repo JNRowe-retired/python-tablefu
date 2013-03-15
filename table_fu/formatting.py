@@ -26,12 +26,12 @@ def _saferound(value, decimal_places):
 def ap_state(value, failure_string=None):
     """
     Converts a state's name, postal abbreviation or FIPS to A.P. style.
-    
+
     Example usage:
-    
+
         >> ap_state("California")
         'Calif.'
-    
+
     """
     try:
         return statestyle.get(value).ap
@@ -45,10 +45,10 @@ def ap_state(value, failure_string=None):
 def capfirst(value, failure_string='N/A'):
     """
     Capitalizes the first character of the value.
-    
+
     If the submitted value isn't a string, returns the `failure_string` keyword
     argument.
-    
+
     Cribbs from django's default filter set
     """
     try:
@@ -65,10 +65,10 @@ def dollars(value):
 def dollar_signs(value, failure_string='N/A'):
     """
     Converts an integer into the corresponding number of dollar sign symbols.
-    
+
     If the submitted value isn't a string, returns the `failure_string` keyword
     argument.
-    
+
     Meant to emulate the illustration of price range on Yelp.
     """
     try:
@@ -84,7 +84,7 @@ def dollar_signs(value, failure_string='N/A'):
 def image(value, width='', height=''):
     """
     Accepts a URL and returns an HTML image tag ready to be displayed.
-    
+
     Optionally, you can set the height and width with keyword arguments.
     """
     style = ""
@@ -106,7 +106,7 @@ def link(title, url):
 def intcomma(value):
     """
     Borrowed from django.contrib.humanize
-    
+
     Converts an integer to a string containing commas every three digits.
     For example, 3000 becomes '3,000' and 45000 becomes '45,000'.
     """
@@ -121,12 +121,12 @@ def intcomma(value):
 def percentage(value, decimal_places=1, multiply=True, failure_string='N/A'):
     """
     Converts a floating point value into a percentage value.
-    
+
     Number of decimal places set by the `decimal_places` kwarg. Default is one.
-    
+
     By default the number is multiplied by 100. You can prevent it from doing
     that by setting the `multiply` keyword argument to False.
-    
+
     If the submitted value isn't a string, returns the `failure_string` keyword
     argument.
     """
@@ -142,12 +142,12 @@ def percentage(value, decimal_places=1, multiply=True, failure_string='N/A'):
 def percent_change(value, decimal_places=1, multiply=True, failure_string='N/A'):
     """
     Converts a floating point value into a percentage change value.
-    
+
     Number of decimal places set by the `precision` kwarg. Default is one.
-    
+
     Non-floats are assumed to be zero division errors and are presented as
     'N/A' in the output.
-    
+
     By default the number is multiplied by 100. You can prevent it from doing
     that by setting the `multiply` keyword argument to False.
     """
@@ -167,7 +167,7 @@ def percent_change(value, decimal_places=1, multiply=True, failure_string='N/A')
 def ratio(value, decimal_places=0, failure_string='N/A'):
     """
     Converts a floating point value a X:1 ratio.
-    
+
     Number of decimal places set by the `precision` kwarg. Default is one.
     """
     try:
@@ -183,10 +183,10 @@ def stateface(value):
     font code.
     
     Example usage:
-    
+
         >> stateface("California")
         'E'
-    
+
     Documentation: http://propublica.github.com/stateface/
     """
     try:
@@ -198,12 +198,12 @@ def stateface(value):
 def state_postal(value):
     """
     Converts a state's name, or FIPS to its postal abbreviation
-    
+
     Example usage:
 
         >> state_postal("California")
         'Calif.'
-    
+
     """
     try:
         return statestyle.get(value).postal
@@ -214,7 +214,7 @@ def state_postal(value):
 def title(value, failure_string='N/A'):
     """
     Converts a string into titlecase.
-    
+
     Lifted from Django.
     """
     try:
@@ -250,35 +250,35 @@ class Formatter(object):
     A formatter is a function (or any callable, really)
     that takes a value and returns a nicer-looking value,
     most likely a sting.
-    
+
     Formatter stores and calls those functions, keeping
     the namespace uncluttered.
-    
+
     Formatting functions should take a value as the first
     argument--usually the value of the Datum on which the
     function is called--followed by any number of positional
     arguments.
-    
+
     In the context of TableFu, those arguments may refer to
     other columns in the same row.
-    
+
     >>> formatter = Formatter()
     >>> formatter(1200, 'intcomma')
     '1,200'
     >>> formatter(1200, 'dollars')
     '$1,200'
     """
-    
+
     def __init__(self):
         self._filters = {}
         for name, func in DEFAULT_FORMATTERS.items():
             self.register(name, func)
-    
+
     def __call__(self, value, func, *args, **kwargs):
         if not callable(func):
             func = self._filters[func]
         return func(value, *args, **kwargs)
-    
+
     def register(self, name=None, func=None):
         if not func and not name:
             return
@@ -288,20 +288,20 @@ class Formatter(object):
             name = func.__name__
         elif func and not name:
             name = func.__name__
-        
+
         self._filters[name] = func
-    
+
     def unregister(self, name=None, func=None):
         if not func and not name:
             return
         if not name:
             name = func.__name__
-        
+
         if name not in self._filters:
             return
-        
+
         del self._filters[name]
-        
+
 
 # Unless you need to subclass or keep formatting functions
 # isolated, you can just import this instance.

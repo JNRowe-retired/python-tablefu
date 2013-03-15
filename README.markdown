@@ -15,43 +15,43 @@ Usage:
     # total a column
     >>> table.total('Number of Pages')
     1177.0
-    
+
     # filtering a table returns a new instance
     >>> t2 = table.filter(Style='Modernism')
     >>> list(t2)
     [<Row: Samuel Beckett, Malone Muert, 120, Modernism>,
      <Row: James Joyce, Ulysses, 644, Modernism>]
-    
-    
+
+
     # each TableFu instance acts like a list of rows
     >>> table[0]
     <Row: Samuel Beckett, Malone Muert, 120, Modernism>
-    
+
     list(table.rows)
     [<Row: Samuel Beckett, Malone Muert, 120, Modernism>,
      <Row: James Joyce, Ulysses, 644, Modernism>,
      <Row: Nicholson Baker, Mezannine, 150, Minimalism>,
      <Row: Vladimir Sorokin, The Queue, 263, Satire>]
-    
+
     # rows, in turn, act like dictionaries
     >>> row = table[1]
     >>> print row['Author']
     James Joyce
-    
+
     # transpose a table
     >>> t2 = table.transpose()
     >>> list(t2)
     [<Row: Best Book, Malone Muert, Ulysses, Mezannine, The Queue>,
      <Row: Number of Pages, 120, 644, 150, 263>,
      <Row: Style, Modernism, Modernism, Minimalism, Satire>]
-    
+
     >>> t2.columns
     ['Author',
      'Samuel Beckett',
      'James Joyce',
      'Nicholson Baker',
      'Vladimir Sorokin']
-    
+
     # sort rows
     >>> table.sort('Author')
     >>> table.rows
@@ -59,13 +59,13 @@ Usage:
      <Row: Nicholson Baker, Mezannine, 150, Minimalism>,
      <Row: Samuel Beckett, Malone Muert, 120, Modernism>,
      <Row: Vladimir Sorokin, The Queue, 263, Satire>]
-    
+
     # sorting is stored
     table.options['sorted_by']
     {'Author': {'reverse': False}}
-    
+
     # which is handy because...
-    
+
     # tables can also be faceted (and options are copied to new tables)
     >>> for t in table.facet_by('Style'):
     ...     print t.faceted_on
@@ -93,7 +93,7 @@ New filters can be registered with the included Formatter class.
     >>> format.register(capitalize)
     >>> print format('foo', 'capitalize')
     Foo
-    
+
 Cells can be formatted according to rules of the table (which carry over if the table is faceted):
 
     >>> table = TableFu(open('tests/sites.csv'))
@@ -104,8 +104,8 @@ Cells can be formatted according to rules of the table (which carry over if the 
     ... }
     >>> print table[0]['Name']
     <a href="http://www.chrisamico.com" title="ChrisAmico.com">ChrisAmico.com</a>
-    
-    
+
+
 HTML Output
 -----------
 

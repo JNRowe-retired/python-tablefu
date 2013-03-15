@@ -8,7 +8,7 @@ from table_fu.formatting import Formatter
 
 
 class TableTest(unittest.TestCase):
-    
+
     def setUp(self):
         self.csv_file = open('tests/test.csv')
         self.table = [['Author', 'Best Book', 'Number of Pages', 'Style'],
@@ -59,7 +59,7 @@ class ColumnTest(TableTest):
 
 
 class HeaderTest(TableTest):
-    
+
     def test_get_headers(self):
         "Get the table's headers"
         t = TableFu(self.csv_file)
@@ -67,7 +67,7 @@ class HeaderTest(TableTest):
 
 
 class RowTest(TableTest):
-    
+
     def test_count_rows(self):
         "Count rows, not including headings"
         t = TableFu(self.csv_file)
@@ -92,7 +92,7 @@ class RowTest(TableTest):
 
 
 class RowColumnTest(TableTest):
-     
+
     def test_limit_columns(self):
         "Column definitions are passed to rows"
         t = TableFu(self.csv_file)
@@ -104,7 +104,7 @@ class RowColumnTest(TableTest):
 
 
 class DatumTest(TableTest):
-    
+
     def test_get_datum(self):
         "Get one cell at a time"
         t = TableFu(self.csv_file)
@@ -129,7 +129,7 @@ class DatumTest(TableTest):
                     self.table[i][index],
                     str(row[column])
                 )
-    
+
     def test_update_values(self):
         "Update multiple cell values for a given row"
         t = TableFu(self.csv_file)
@@ -145,25 +145,25 @@ class DatumTest(TableTest):
             set(kerouac.values()),
             set(modernism.cells)
         )
-    
+
     def test_datum_equality(self):
         "Data are tested on their values"
         t = TableFu(self.csv_file)
         self.assertEqual(t[0]['Author'], 'Samuel Beckett')
-    
+
     def test_keys(self):
         "Get keys for a row, which should match the table's columns"
         t = TableFu(self.csv_file)
         modernism = t[0]
         self.assertEqual(modernism.keys(), t.columns)
-    
+
     def test_values(self):
         "Get values for a row"
         t = TableFu(self.csv_file)
         modernism = t[0]
         values = [d.value for d in modernism.data]
         self.assertEqual(modernism.values(), values)
-    
+
     def test_items(self):
         "Get key-value pairs for a row"
         t = TableFu(self.csv_file)
@@ -172,7 +172,7 @@ class DatumTest(TableTest):
             modernism.items(),
             zip(modernism.keys(), modernism.values())
         )
-    
+
     def test_list_row(self):
         "Convert a row back to a list"
         t = TableFu(self.csv_file)
@@ -184,7 +184,7 @@ class DatumTest(TableTest):
 
 
 class ErrorTest(TableTest):
-    
+
     def test_bad_key(self):
         "Non-existent columns raise a KeyError"
         t = TableFu(self.csv_file)
@@ -194,7 +194,7 @@ class ErrorTest(TableTest):
                 row.__getitem__,
                 'not-a-key'
             )
-    
+
     def test_bad_total(self):
         "Only number-like fields can be totaled"
         t = TableFu(self.csv_file)
@@ -202,7 +202,7 @@ class ErrorTest(TableTest):
 
 
 class SortTest(TableTest):
-    
+
     def test_sort(self):
         "Sort a table in place"
         t = TableFu(self.csv_file)
@@ -222,14 +222,14 @@ class ValuesTest(TableTest):
         self.table.pop(0)
         authors = [row[0] for row in self.table]
         self.assertEqual(authors, t.values('Author'))
-    
+
     def test_unique_values(self):
         "Adding unique=True returns a set"
         t = TableFu(self.table)
         self.table.pop(0)
         styles = set([row[-1] for row in self.table])
         self.assertEqual(t.values('Style', unique=True), styles)
-    
+
     def test_totals(self):
         "Total values for a table across rows"
         t = TableFu(self.csv_file)
@@ -251,31 +251,31 @@ class FacetTest(TableTest):
         )
 
 class FilterTest(TableTest):
-    
+
     def test_count(self):
         "Count is like len()"
         t = TableFu(self.csv_file)
         self.assertEqual(len(t), t.count())
-    
+
     def test_filter(self):
         "Filtering returns a new TableFu instance"
         t = TableFu(self.csv_file)
         f = t.filter(Author='Samuel Beckett')
         self.assertEqual(type(t), type(f))
         self.assertEqual(t.columns, f.columns)
-    
+
     def test_simple_filter(self):
         "Filter by keyword args"
         t = TableFu(self.csv_file)
         f = t.filter(Author='Samuel Beckett')
         self.assertEqual(f[0].cells, self.table[1])
-    
+
     def test_multi_filter(self):
         "Filter by multiple keywords"
         t = TableFu(self.csv_file)
         f = t.filter(Style='Modernism', Author='Samuel Beckett')
         self.assertEqual(f[0].cells, self.table[1])
-    
+
     def test_big_filter(self):
         arra = open('tests/arra.csv')
         t = TableFu(arra)
@@ -284,14 +284,14 @@ class FilterTest(TableTest):
 
 
 class OptionsTest(TableTest):
-    
+
     def test_sort_option_str(self):
         "Sort the table by a string field, Author"
         t = TableFu(self.csv_file, sorted_by={"Author": {'reverse': True}})
         self.table.pop(0)
         self.table.sort(key=lambda row: row[0], reverse=True)
         self.assertEqual(t[0].cells, self.table[0])
-    
+
     def test_sort_option_int(self):
         "Sorting the table by an int field, Number of Pages"
         t = TableFu(self.csv_file)
@@ -302,10 +302,10 @@ class OptionsTest(TableTest):
 
 
 class DatumFormatTest(TableTest):
-    
+
     def setUp(self):
         self.csv_file = open('tests/sites.csv')
-    
+
     def test_cell_format(self):
         "Format a cell"
         t = TableFu(self.csv_file)
@@ -321,7 +321,7 @@ class DatumFormatTest(TableTest):
         )
 
 class HTMLTest(TableTest):
-    
+
     def test_datum_td(self):
         "Output a cell as a <td> element"
         t = TableFu(self.csv_file)
@@ -330,7 +330,7 @@ class HTMLTest(TableTest):
             beckett.as_td(),
             '<td style="" class="datum">Samuel Beckett</td>'
         )
-    
+
     def test_row_tr(self):
         "Output a row as a <tr> element"
         t = TableFu(self.csv_file)
@@ -339,7 +339,7 @@ class HTMLTest(TableTest):
             row.as_tr(),
             '<tr id="row0" class="row even"><td style="" class="datum">Samuel Beckett</td><td style="" class="datum">Malone Muert</td><td style="" class="datum">120</td><td style="" class="datum">Modernism</td></tr>'
         )
-    
+
     def test_header_th(self):
         t = TableFu(self.csv_file)
         hed = t.headers[0]
@@ -347,12 +347,12 @@ class HTMLTest(TableTest):
 
 
 class StyleTest(TableTest):
-    
+
     def test_datum_style(self):
         t = TableFu(self.csv_file, style={'Author': 'text-align:left;'})
         beckett = t[0]['Author']
         self.assertEqual(beckett.style, 'text-align:left;')
-    
+
     def test_datum_td_style(self):
         t = TableFu(self.csv_file, style={'Author': 'text-align:left;'})
         beckett = t[0]['Author']
@@ -360,12 +360,12 @@ class StyleTest(TableTest):
             beckett.as_td(),
             '<td style="text-align:left;" class="datum">Samuel Beckett</td>'
         )
-    
+
     def test_header_style(self):
         t = TableFu(self.csv_file, style={'Author': 'text-align:left;'})
         hed = t.headers[0]
         self.assertEqual(hed.style, 'text-align:left;')
-    
+
     def test_header_th_style(self):
         t = TableFu(self.csv_file, style={'Author': 'text-align:left;'})
         hed = t.headers[0]
@@ -376,13 +376,13 @@ class StyleTest(TableTest):
 
 
 class OutputTest(TableTest):
-    
+
     def setUp(self):
         self.csv_file = open('tests/arra.csv')
-    
+
     def tearDown(self):
-        self.csv_file.close()    
-    
+        self.csv_file.close()
+
     def test_csv(self):
         t = TableFu(self.csv_file)
         self.csv_file.seek(0)
@@ -397,13 +397,13 @@ class OutputTest(TableTest):
                 import simplejson as json
             except ImportError:
                 return
-        
+
         t = TableFu(self.csv_file)
         self.csv_file.seek(0)
         reader = csv.DictReader(self.csv_file)
         jsoned = json.dumps([row for row in reader])
         self.assertEqual(t.json(), jsoned)
-    
+
     def test_python(self):
         t = TableFu(self.csv_file)
         self.csv_file.seek(0)
@@ -413,7 +413,7 @@ class OutputTest(TableTest):
 
 
 class ManipulationTest(TableTest):
-    
+
     def test_transpose(self):
         t = TableFu(self.table)
         result = [
@@ -422,7 +422,7 @@ class ManipulationTest(TableTest):
             ['Number of Pages', '120', '644', '150', '263', '1088'],
             ['Style', 'Modernism', 'Modernism', 'Minimalism', 'Satire', 'Science fiction']
         ]
-        
+
         transposed = t.transpose()
         self.assertEqual(transposed.table, result[1:])
         self.assertEqual(transposed.columns, [
@@ -433,7 +433,7 @@ class ManipulationTest(TableTest):
             'Vladimir Sorokin',
             'Ayn Rand',
         ])
-    
+
     def test_row_map(self):
         """
         Test map a function to rows, or a subset of fields
@@ -441,7 +441,7 @@ class ManipulationTest(TableTest):
         t = TableFu(self.table)
         result = [s.lower() for s in t.values('Style')]
         self.assertEqual(result, t.map(lambda row: row['Style'].value.lower()))
-    
+
     def test_map_values(self):
         """
         Test mapping a function to specific column values
@@ -449,7 +449,7 @@ class ManipulationTest(TableTest):
         t = TableFu(self.table)
         result = [s.lower() for s in t.values('Style')]
         self.assertEqual(result, t.map(str.lower, 'Style'))
-    
+
     def test_map_many_values(self):
         """
         Test mapping a function to multiple columns
@@ -479,14 +479,14 @@ class RegisterTest(FormatTest):
             return args
         self.format.register(test)
         self.assertEqual(test, self.format._filters['test'])
-    
+
     def test_intcomma(self):
         "Use intcomma for nicer number formatting"
         self.assertEqual(
             self.format(1200, 'intcomma'),
             '1,200'
         )
-    
+
     def test_ap_state(self):
         "Return AP state style of a state"
         self.assertEqual(
@@ -513,7 +513,7 @@ class RegisterTest(FormatTest):
             self.format('foo', 'ap_state', failure_string='bar'),
             'bar'
         )
-    
+
     def test_capfirst(self):
         "Returns a string with only the first character capitalized"
         self.assertEqual(
@@ -540,7 +540,7 @@ class RegisterTest(FormatTest):
             self.format(1, 'capfirst', failure_string='bar'),
             'bar'
         )
-    
+
     def test_dollar_signs(self):
         "Converts an integer into the corresponding number of dollar sign symbols."
         self.assertEqual(
@@ -559,14 +559,14 @@ class RegisterTest(FormatTest):
             self.format('foo', 'dollar_signs', failure_string='bar'),
             'bar'
         )
-    
+
     def test_image(self):
         "Returns an HTML image tag"
         self.assertEqual(
             self.format('http://lorempixel.com/400/200/', 'image'),
             '<img src="http://lorempixel.com/400/200/" style="">'
         )
-    
+
     def test_percentage(self):
         "Converts a floating point value into a percentage value."
         self.assertEqual(
@@ -593,7 +593,7 @@ class RegisterTest(FormatTest):
             self.format('foo', 'percentage', failure_string='bar'),
             'bar'
         )
-    
+
     def test_percent_change(self):
         "Converts a floating point value into a percentage change value."
         self.assertEqual(
@@ -620,7 +620,7 @@ class RegisterTest(FormatTest):
             self.format('foo', 'percent_change', failure_string='bar'),
             'bar'
         )
-    
+
     def test_ratio(self):
         "Converts a floating point value a X:1 ratio."
         self.assertEqual(
@@ -643,7 +643,7 @@ class RegisterTest(FormatTest):
             self.format('foo', 'ratio', failure_string='bar'),
             'bar'
         )
-    
+
     def test_stateface(self):
         "Returns ProPublica stateface"
         self.assertEqual(
@@ -654,7 +654,7 @@ class RegisterTest(FormatTest):
             self.format('Wyo.', 'stateface'),
             'x'
         )
-    
+
     def test_state_postal(self):
         "Returns a state's postal code"
         self.assertEqual(
@@ -669,7 +669,7 @@ class RegisterTest(FormatTest):
             self.format('foo', 'state_postal'),
             'foo'
         )
-    
+
     def test_title(self):
         "Converts a string into titlecase."
         self.assertEqual(
@@ -695,12 +695,12 @@ class RegisterTest(FormatTest):
 
 
 class OpenerTest(unittest.TestCase):
-    
+
     def test_from_file(self):
         t1 = TableFu.from_file('tests/arra.csv')
         t2 = TableFu(open('tests/arra.csv'))
         self.assertEqual(t1.table, t2.table)
-    
+
     def test_from_url(self):
         if not os.getenv('TEST_REMOTE'):
             return True
@@ -710,7 +710,7 @@ class OpenerTest(unittest.TestCase):
         self.assertEqual(t1.table, t2.table)
 
 class RemoteTest(unittest.TestCase):
-    
+
     def test_use_url(self):
         "Use a response from urllib2.urlopen as our base file"
         if not os.getenv('TEST_REMOTE'):
