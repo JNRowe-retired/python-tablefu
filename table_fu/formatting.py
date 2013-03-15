@@ -3,12 +3,19 @@ Utilities to format values into more meaningful strings.
 Inspired by James Bennett's template_utils and Django's
 template filters.
 """
+import collections
 import re
+import sys
 
 try:
     import statestyle
 except ImportError:
     statestyle = None
+
+
+PY3K = sys.version_info[0] == 3
+if PY3K:
+    unicode = str
 
 
 def _saferound(value, decimal_places):
@@ -59,7 +66,7 @@ def capfirst(value, failure_string='N/A'):
 
 
 def dollars(value):
-    return u'$%s' % intcomma(value)
+    return unicode('$%s' % intcomma(value))
 
 
 def dollar_signs(value, failure_string='N/A'):
@@ -97,10 +104,8 @@ def image(value, width='', height=''):
 
 
 def link(title, url):
-    return u'<a href="%(url)s" title="%(title)s">%(title)s</a>' % {
-        'url': url,
-        'title': title
-    }
+    return unicode('<a href="%(url)s" title="%(title)s">%(title)s</a>'
+                   % {'url': url, 'title': title})
 
 
 def intcomma(value):
@@ -277,7 +282,7 @@ class Formatter(object):
             self.register(name, func)
 
     def __call__(self, value, func, *args, **kwargs):
-        if not callable(func):
+        if not isinstance(func, collections.Callable):
             func = self._filters[func]
         return func(value, *args, **kwargs)
 
@@ -285,7 +290,7 @@ class Formatter(object):
         if not func and not name:
             return
 
-        if callable(name) and not func:
+        if isinstance(name, collections.Callable) and not func:
             func = name
             name = func.__name__
         elif func and not name:

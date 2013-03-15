@@ -2,7 +2,12 @@
 import csv
 import unittest
 import os
-import urllib2
+
+try:  # Python 3
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
+
 from table_fu import TableFu
 from table_fu.formatting import Formatter
 
@@ -154,22 +159,22 @@ class DatumTest(TableTest):
         "Get keys for a row, which should match the table's columns"
         t = TableFu(self.csv_file)
         modernism = t[0]
-        self.assertEqual(modernism.keys(), t.columns)
+        self.assertEqual(list(modernism.keys()), t.columns)
 
     def test_values(self):
         "Get values for a row"
         t = TableFu(self.csv_file)
         modernism = t[0]
         values = [d.value for d in modernism.data]
-        self.assertEqual(modernism.values(), values)
+        self.assertEqual(list(modernism.values()), values)
 
     def test_items(self):
         "Get key-value pairs for a row"
         t = TableFu(self.csv_file)
         modernism = t[0]
         self.assertEqual(
-            modernism.items(),
-            zip(modernism.keys(), modernism.values())
+            list(modernism.items()),
+            list(zip(modernism.keys(), modernism.values()))
         )
 
     def test_list_row(self):
@@ -178,7 +183,7 @@ class DatumTest(TableTest):
         modernism = t[0]
         self.assertEqual(
             list(modernism),
-            modernism.values()
+            list(modernism.values())
         )
 
 
@@ -718,7 +723,7 @@ class RemoteTest(unittest.TestCase):
         response1 = urllib2.urlopen(url)
         response2 = urllib2.urlopen(url)
         reader = csv.reader(response1)
-        columns = reader.next()
+        columns = next(reader)
         t = TableFu(response2)
         self.assertEqual(columns, t.columns)
 

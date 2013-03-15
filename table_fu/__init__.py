@@ -12,13 +12,20 @@ __version__ = "0.4.2"
 __author__ = "Chris Amico (eyeseast@gmail.com)"
 
 import csv
-import urllib2
 from copy import copy
+import collections
 
-try:
-    from cStringIO import StringIO
+try:  # Python 3
+    import urllib.request as urllib2
+    from io import StringIO
+    xrange = range
 except ImportError:
-    from StringIO import StringIO
+    import urllib2
+
+    try:
+        from cStringIO import StringIO
+    except ImportError:
+        from StringIO import StringIO
 
 try:
     import json
@@ -68,7 +75,7 @@ class TableFu(object):
         either a list or tuple, or an open file that can be
         parsed by Python's csv module (using csv.reader)
         """
-        if hasattr(table, 'next'):  # for file-like objects
+        if hasattr(table, 'read'):  # for file-like objects
             reader = csv.reader(table)
             self.table = [row for row in reader]
         else:
@@ -82,7 +89,7 @@ class TableFu(object):
         self.style = options.get('style', {})
         self.options = options
         if 'sorted_by' in options:
-            col = options['sorted_by'].keys()[0]
+            col = list(options['sorted_by'].keys())[0]
             self.sort(column_name=col,
                       reverse=options['sorted_by'][col].get('reverse', False))
 
@@ -136,7 +143,7 @@ class TableFu(object):
         sorting is done in TableFu.options['sorted_by']
         """
         if not column_name and 'sorted_by' in self.options:
-            column_name = self.options['sorted_by'].keys()[0]
+            column_name = list(self.options['sorted_by'].keys())[0]
         if column_name not in self.default_columns:
             raise ValueError("%s isn't a column in this table" % column_name)
         index = self.default_columns.index(column_name)
@@ -147,7 +154,7 @@ class TableFu(object):
         if column_name not in self.default_columns:
             raise ValueError("%s isn't a column in this table" % column_name)
 
-        if not callable(func):
+        if not isinstance(func, collections.Callable):
             raise TypeError("%s isn't callable" % func)
 
         index = self.default_columns.index(column_name)
@@ -184,8 +191,8 @@ class TableFu(object):
 
         In either case, a new TableFu instance is returned
         """
-        if callable(func):
-            result = filter(func, self)
+        if isinstance(func, collections.Callable):
+            result = list(filter(func, self))
             result.insert(0, self.default_columns)
             return TableFu(result, **self.options)
         else:
@@ -239,10 +246,10 @@ class TableFu(object):
         Map a function to rows, or to given columns
         """
         if not columns:
-            return map(func, self.rows)
+            return list(map(func, self.rows))
         else:
             values = (self.values(column) for column in columns)
-            result = [map(func, v) for v in values]
+            result = [list(map(func, v)) for v in values]
             if len(columns) == 1:
                 return result[0]
             else:
@@ -337,7 +344,7 @@ class Row(object):
         return [d.value for d in self.data]
 
     def items(self):
-        return zip(self.keys(), self.values())
+        return list(zip(self.keys(), self.values()))
 
     def __getitem__(self, column_name):
         "Get the value for a given cell, or raise KeyError if the column doesn't exist"
@@ -437,7 +444,7 @@ class Header(object):
         return "<Header: %s>" % (self.name)
 
     def __str__(self):
-        return self.name.encode('utf-8')
+        return self.name
 
     def __eq__(self, other):
         if type(other) == type(self):
