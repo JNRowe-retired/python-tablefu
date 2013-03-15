@@ -11,12 +11,14 @@ class TableTest(unittest.TestCase):
 
     def setUp(self):
         self.csv_file = open('tests/test.csv')
-        self.table = [['Author', 'Best Book', 'Number of Pages', 'Style'],
+        self.table = [
+            ['Author', 'Best Book', 'Number of Pages', 'Style'],
             ['Samuel Beckett', 'Malone Muert', '120', 'Modernism'],
             ['James Joyce', 'Ulysses', '644', 'Modernism'],
             ['Nicholson Baker', 'Mezannine', '150', 'Minimalism'],
             ['Vladimir Sorokin', 'The Queue', '263', 'Satire'],
-            ['Ayn Rand', 'Atlas Shrugged', '1088', 'Science fiction']]
+            ['Ayn Rand', 'Atlas Shrugged', '1088', 'Science fiction']
+        ]
 
     def tearDown(self):
         self.csv_file.close()
@@ -97,10 +99,7 @@ class RowColumnTest(TableTest):
         "Column definitions are passed to rows"
         t = TableFu(self.csv_file)
         t.columns = ['Author', 'Style']
-        self.assertEqual(
-            str(t[0]),
-            'Samuel Beckett, Modernism'
-            )
+        self.assertEqual(str(t[0]), 'Samuel Beckett, Modernism')
 
 
 class DatumTest(TableTest):
@@ -214,6 +213,7 @@ class SortTest(TableTest):
             self.table[0]
         )
 
+
 class ValuesTest(TableTest):
 
     def test_values(self):
@@ -249,6 +249,7 @@ class FacetTest(TableTest):
             style_row,
             tables[2][0].cells
         )
+
 
 class FilterTest(TableTest):
 
@@ -309,16 +310,13 @@ class DatumFormatTest(TableTest):
     def test_cell_format(self):
         "Format a cell"
         t = TableFu(self.csv_file)
-        t.formatting = {'Name': {
-            'filter': 'link',
-            'args': ['URL']
-            }
-        }
-        
+        t.formatting = {'Name': {'filter': 'link', 'args': ['URL']}}
+
         self.assertEqual(
             str(t[0]['Name']),
             '<a href="http://www.chrisamico.com" title="ChrisAmico.com">ChrisAmico.com</a>'
         )
+
 
 class HTMLTest(TableTest):
 
@@ -387,8 +385,8 @@ class OutputTest(TableTest):
         t = TableFu(self.csv_file)
         self.csv_file.seek(0)
         for test, control in zip(t.csv(), self.csv_file.readline()):
-            self.assertEqual(test.strip(), control.strip()) # controlling for newlines
-    
+            self.assertEqual(test.strip(), control.strip())  # controlling for newlines
+
     def test_json(self):
         try:
             import json
@@ -709,6 +707,7 @@ class OpenerTest(unittest.TestCase):
         t2 = TableFu(urllib2.urlopen(url))
         self.assertEqual(t1.table, t2.table)
 
+
 class RemoteTest(unittest.TestCase):
 
     def test_use_url(self):
@@ -737,7 +736,6 @@ class UpdateTest(TableTest):
         t.transform('Number of Pages', int)
         for s, i in zip(pages, t.values('Number of Pages')):
             self.assertEqual(int(s), i)
-        
 
 
 if __name__ == '__main__':

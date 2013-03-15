@@ -32,6 +32,7 @@ except ImportError:
 
 from table_fu.formatting import format
 
+
 class TableFu(object):
     """
     A table, to be manipulated like a spreadsheet.
@@ -67,7 +68,7 @@ class TableFu(object):
         either a list or tuple, or an open file that can be
         parsed by Python's csv module (using csv.reader)
         """
-        if hasattr(table, 'next'): # for file-like objects
+        if hasattr(table, 'next'):  # for file-like objects
             reader = csv.reader(table)
             self.table = [row for row in reader]
         else:
@@ -80,10 +81,10 @@ class TableFu(object):
         self.formatting = options.get('formatting', {})
         self.style = options.get('style', {})
         self.options = options
-        if options.has_key('sorted_by'):
+        if 'sorted_by' in options:
             col = options['sorted_by'].keys()[0]
-            self.sort(column_name=col, 
-            reverse=options['sorted_by'][col].get('reverse', False))
+            self.sort(column_name=col,
+                      reverse=options['sorted_by'][col].get('reverse', False))
 
     def __getitem__(self, row_num):
         """
@@ -134,12 +135,12 @@ class TableFu(object):
         Sort rows in this table, preserving a record of how that
         sorting is done in TableFu.options['sorted_by']
         """
-        if not column_name and self.options.has_key('sorted_by'):
+        if not column_name and 'sorted_by' in self.options:
             column_name = self.options['sorted_by'].keys()[0]
         if column_name not in self.default_columns:
             raise ValueError("%s isn't a column in this table" % column_name)
         index = self.default_columns.index(column_name)
-        self.table.sort(key = lambda row: row[index], reverse=reverse)
+        self.table.sort(key=lambda row: row[index], reverse=reverse)
         self.options['sorted_by'] = {column_name: {'reverse': reverse}}
 
     def transform(self, column_name, func):
@@ -202,7 +203,7 @@ class TableFu(object):
         for row in self.rows:
             if row[column]:
                 col = row[column].value
-                if faceted_spreadsheets.has_key(col):
+                if col in faceted_spreadsheets:
                     faceted_spreadsheets[col].append(row.cells)
                 else:
                     faceted_spreadsheets[col] = []
@@ -396,7 +397,7 @@ class Datum(object):
         version of value, then fall back to the default value
         if there's no set formatting.
         """
-        if self.table.formatting.has_key(self.column_name):
+        if self.column_name in self.table.formatting:
             func = self.table.formatting[self.column_name].get('filter', None)
             args = self.table.formatting[self.column_name].get('args', [])
             kwargs = self.table.formatting[self.column_name].get('options', {})

@@ -59,7 +59,7 @@ def capfirst(value, failure_string='N/A'):
 
 
 def dollars(value):
-    return u'$%s'% intcomma(value)
+    return u'$%s' % intcomma(value)
 
 
 def dollar_signs(value, failure_string='N/A'):
@@ -139,7 +139,8 @@ def percentage(value, decimal_places=1, multiply=True, failure_string='N/A'):
     return _saferound(value, decimal_places) + '%'
 
 
-def percent_change(value, decimal_places=1, multiply=True, failure_string='N/A'):
+def percent_change(value, decimal_places=1, multiply=True,
+                   failure_string='N/A'):
     """
     Converts a floating point value into a percentage change value.
 
@@ -156,7 +157,7 @@ def percent_change(value, decimal_places=1, multiply=True, failure_string='N/A')
         if multiply:
             f = f * 100
     except ValueError:
-       return  failure_string
+        return failure_string
     s = _saferound(f, decimal_places)
     if f > 0:
         return '+' + s + '%'
@@ -179,9 +180,9 @@ def ratio(value, decimal_places=0, failure_string='N/A'):
 
 def stateface(value):
     """
-    Converts a state's name, postal abbreviation or FIPS to ProPublica's stateface
-    font code.
-    
+    Converts a state's name, postal abbreviation or FIPS to ProPublica's
+    stateface font code.
+
     Example usage:
 
         >> stateface("California")
@@ -219,7 +220,8 @@ def title(value, failure_string='N/A'):
     """
     try:
         value = value.lower()
-        t = re.sub("([a-z])'([A-Z])", lambda m: m.group(0).lower(), value.title())
+        t = re.sub("([a-z])'([A-Z])", lambda m: m.group(0).lower(),
+                   value.title())
         result = re.sub("\d([A-Z])", lambda m: m.group(0).lower(), t)
         if not result:
             return failure_string
